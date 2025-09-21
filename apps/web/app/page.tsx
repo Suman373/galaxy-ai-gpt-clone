@@ -1,5 +1,9 @@
-import { redirect } from "next/navigation";
+import MainChat from "@/ui/chat/MainChat";
 
 export default function HomePage() {
-  redirect("/chat");
+  return(
+    <section>
+      <MainChat/>
+    </section>
+  )
 }

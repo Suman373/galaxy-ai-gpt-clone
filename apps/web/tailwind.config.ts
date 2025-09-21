@@ -2,30 +2,24 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: [
-    "./app/**/*.{ts,tsx,js,jsx}",
-    "./apps/web/**/*.tsx",
-    "./ui/**/*.{ts,tsx,js,jsx}",
+    "./app/**/*.{js,ts,jsx,tsx}",
+    "./ui/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
       colors: {
-        clone: {
-          bg: "#f7f7fb",        // page bg
-          surface: "#ffffff",   // main panels
-          muted: "#f3f4f6",     // subtle grey panels
-          line: "#e6e6ea",      // thin borders / separators
-          text: "#111827",      // primary text
-          dim: "#6b7280",       // secondary text
-          sidebar: "#0f1724",   // dark sidebar bg
-          accent: "#10a37f",    // small accent (if used)
-          primary: "#7c3aed",   // alternative accent
-        },
+        bgPrimary: "#212121",
+        bgSecondary: "#303030",
+        bgTertiary: "#414141",
+        bgScrim: "#0d0d0d80",
+        sidebar: "#0f1724",
+        accent: "#10a37f",
       },
       spacing: {
         18: "4.5rem",
       },
       maxWidth: {
-        chat: "70ch", // control message width
+        chat: "70ch",
       },
       borderRadius: {
         xl2: "1rem",

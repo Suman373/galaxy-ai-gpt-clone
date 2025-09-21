@@ -1,31 +1,47 @@
-import { useState } from "react";
+import { ChatInputProps } from "@/lib/types";
+import React, { useState } from "react";
+import { FiPlus } from "react-icons/fi";
+import { IoArrowUpOutline } from "react-icons/io5";
+import { FaSquare } from "react-icons/fa";
 
-export function ChatInput({ onSend }: { onSend: (msg: any) => void }) {
+export function ChatInput({ onSend, status }: ChatInputProps) {
+  const [inputText, setInputText] = useState("");
 
-  const [input, setInput] = useState("");
-  const handleSend = () => {
-    if (!input.trim()) return;
-    onSend({ role: "user", content: input });
-    setInput("");
-  };
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputText.trim()) return; // empty 
+    onSend(inputText);
+    setInputText("");
+  }
 
   return (
-    <div className="p-4 border-t border-gray-200">
-      <div className="flex items-end gap-2">
-        <textarea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Send a message..."
-          className="flex-1 resize-none rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-600"
-          rows={1}
+    <div className="container xs:w-[20rem] sm:xl lg:w-3xl flex flex-col items-center justify-center mx-auto py-2">
+      <form
+        onSubmit={handleFormSubmit}
+        className="h-14 flex items-center bg-neutral-700 rounded-full w-full px-3 gap-2">
+        <button
+          type="button"
+          className="flex items-center justify-center h-10 w-10 rounded-full hover:bg-neutral-500 cursor-pointer duration-200"
+        >
+          <FiPlus className="text-lg md:text-xl " />
+        </button>
+        <input
+          className="flex-1 bg-transparent outline-none text-white placeholder-neutral-400"
+          type="text"
+          placeholder="Ask anything"
+          value={inputText}
+          disabled={status !== "ready"}
+          onChange={(e) => setInputText(e.target.value)}
         />
         <button
-          onClick={handleSend}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
-        >
-          Send
+          type="submit"
+          className="h-10 w-10 bg-white text-black rounded-full flex items-center justify-center cursor-pointer"
+        > {
+            status === "streaming" ? <FaSquare
+              className="text-lg md:text-xl font-semibold " /> : <IoArrowUpOutline className="text-lg md:text-xl font-semibold " />
+          }
         </button>
-      </div>
+      </form>
     </div>
   );
 }

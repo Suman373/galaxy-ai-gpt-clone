@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { Sidebar } from "@/ui/chat/Sidebar";
 import { MessageList } from "@/ui/chat/MessageList";
 import { ChatInput } from "@/ui/chat/ChatInput";
@@ -9,24 +10,33 @@ import { DefaultChatTransport } from "ai";
 import { MainChatProps } from "@/lib/types";
 import { MdOutlineArrowRightAlt } from "react-icons/md";
 import { PiStarFourFill } from "react-icons/pi";
+import { useRouter } from "next/navigation";
 
-export default function MainChat({ chatId }: MainChatProps) {
+export default function MainChat({ chatId: initialId, initialMessages = [] }: MainChatProps) {
+  const router = useRouter();
 
-  const isHome = !chatId;
-
-  // using DefaultChatTransport from the Vercel AI SDK UI
+  // using DefaultChatTransport from the Vercel AI SDK UI for response streaming
   const { messages, sendMessage, setMessages, status } = useChat({
-    transport: new DefaultChatTransport({ api: "/api/chat" })
+    id: initialId,
+    messages: initialMessages,
+    transport: new DefaultChatTransport({ api: "/api/chat", }),
   });
 
+  const [activeChatId, setActiveChatId] = useState(initialId);
 
-  console.log(messages);
+  const handleSendMessage = async (text: string) => {
+    await sendMessage({ text });
+  }
 
   return (
     <div className="flex">
       <div>
         <Sidebar
-          onNewChat={() => setMessages([])}
+          activeChatId={activeChatId}
+          onNewChat={() => {
+            setMessages([]);
+            router.push(`/c/new`);
+          }}
         />
       </div>
       <div className="flex-1 flex flex-col h-screen relative bg-neutral-800 text-gray-200">
@@ -34,20 +44,20 @@ export default function MainChat({ chatId }: MainChatProps) {
         <div className="flex-1 flex flex-col justify-between overflow-hidden">
 
           {messages?.length === 0 ?
-            ( <div className="max-w-4xl h-screen mx-auto flex flex-col items-center justify-center gap-4 md:gap-6 ">
-            <h2 className="text-2xl md:text-3xl text-gray-200 font-normal px-4">Where should we begin ?</h2>
-            <ChatInput
-              status={status}
-              onSend={(text) => sendMessage({ text })} />
-            <div className="cursor-pointer rounded-full border-[1px] border-neutral-600 px-2 py-1 hover:bg-neutral-600">
-              <p className="text-center flex gap-1 items-center">
-                <PiStarFourFill className=" text-indigo-500"/>
-                 Unlock extra messages, images & more <span className="text-indigo-500 inline-flex items-center">Upgrade plan
-                  <MdOutlineArrowRightAlt className="mt-1" />
-                </span>
-              </p>
-            </div>
-          </div>)
+            (<div className="max-w-4xl h-screen mx-auto flex flex-col items-center justify-center gap-4 md:gap-6 ">
+              <h2 className="text-2xl md:text-3xl text-gray-200 font-normal px-4">Where should we begin ?</h2>
+              <ChatInput
+                status={status}
+                onSend={(text) => handleSendMessage(text)} />
+              <div className="cursor-pointer rounded-full border-[1px] border-neutral-600 px-2 py-1 hover:bg-neutral-600">
+                <p className="text-center flex gap-1 items-center">
+                  <PiStarFourFill className=" text-indigo-500" />
+                  Unlock extra messages, images & more <span className="text-indigo-500 inline-flex items-center">Upgrade plan
+                    <MdOutlineArrowRightAlt className="mt-1" />
+                  </span>
+                </p>
+              </div>
+            </div>)
             :
             (<>
               <div className="flex-1 overflow-hidden px-2">

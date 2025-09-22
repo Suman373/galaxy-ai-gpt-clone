@@ -11,8 +11,8 @@ export function MessageList({ messages }: MessageListProps) {
 
   const handleMsgCopy = async (msg: UIMessage) => {
     const textArr = msg.parts.map((part) => part.type === "text" ? part.text : "");
-    console.log(textArr.join(" "));
     await navigator.clipboard.writeText(textArr.join(" "));
+    alert("Message copied to clipboard");
   }
 
   const handleMsgEdit = () => {

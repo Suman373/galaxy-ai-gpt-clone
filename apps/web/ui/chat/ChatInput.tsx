@@ -30,7 +30,7 @@ export function ChatInput({ onSend, status }: ChatInputProps) {
           type="text"
           placeholder="Ask anything"
           value={inputText}
-          disabled={status !== "ready"}
+          // disabled={status !== "ready"}
           onChange={(e) => setInputText(e.target.value)}
         />
         <button

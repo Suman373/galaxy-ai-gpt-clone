@@ -7,10 +7,12 @@ export type ChatInputProps = {
 
 export type SidebarProps = {
   onNewChat: () => void;
+  activeChatId?: string;
 };
 
 export type MainChatProps = {
   chatId?: string;
+  initialMessages?: UIMessage[]
 }
 
 export type SidebarItemProps = {
@@ -25,3 +27,10 @@ export type SidebarItemProps = {
 export type MessageListProps = {
   messages: UIMessage[];
 };
+
+
+export interface IChat extends Document {
+  userId: string;
+  id: string;
+  messages: UIMessage[]
+}

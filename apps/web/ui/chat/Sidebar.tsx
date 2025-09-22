@@ -2,17 +2,35 @@ import Image from "next/image";
 import OpenAiLogo from '@/public/openai.png';
 import { FiEdit } from "react-icons/fi";
 import { SidebarItem } from "./SidebarItem";
-import { SidebarProps } from "@/lib/types";
+import { IChat, SidebarProps } from "@/lib/types";
+import { useEffect, useState } from "react";
 
 
-export function Sidebar({ setMessages }: SidebarProps) {
+export function Sidebar({ onNewChat, activeChatId }: SidebarProps) {
 
   const userName = "Suman Roy";
   const plan = "Free";
+  const userId = "6d62fced-09c8-4c90-8536-8fe1752e1a04";
+  const [fetchedChats, setFetchedChats] = useState([]);
 
-  const createNewChat = () => {
-
+  const fetchChatHistory = async (userId: string) => {
+    const res = await fetch(`/api/history?id=${userId}`);
+    const data = await res.json();
+    setFetchedChats(data?.result);
   }
+
+  const getChatTitle = (chat: IChat) => {
+    const firstUserMsg = chat?.messages.find(msg => msg.role === "user");
+    const textPart = firstUserMsg?.parts.find(part => part.type === "text");
+    if (textPart?.text.trim()) {
+      return textPart.text.trim().substring(0, 20);
+    }
+    return "New Conversation";
+  }
+
+  useEffect(() => {
+    fetchChatHistory(userId);
+  }, []);
 
   return (
     <aside className="h-screen max-w-[260px] hidden md:w-[260px] md:flex flex-col bg-neutral-900 text-white p-2 overflow-y-auto">
@@ -21,17 +39,23 @@ export function Sidebar({ setMessages }: SidebarProps) {
           <Image className="w-6 invert-100" src={OpenAiLogo} alt="openai-logo" />
         </div>
         <SidebarItem
-          onClick={createNewChat}
+          onClick={onNewChat}
           label="New chat"
           icon={<FiEdit />} />
         <nav className="flex-1 overflow-y-auto px-2">
           {/* chats in history */}
           <div className="text-sm  text-neutral-400 px-2 py-1">Chats</div>
           <div className="space-y-2">
-            <SidebarItem
-             href="/c/id" 
-             label="Example Chat" 
-             icon={null} />
+            {
+              fetchedChats?.length > 0 && fetchedChats.map((chat:IChat, index) => (
+                <SidebarItem
+                  key={index}
+                  isActive={activeChatId === chat.id}
+                  label={getChatTitle(chat)}
+                  href={`/c/${chat.id}`}
+                />
+              ))
+            }
           </div>
         </nav>
 
@@ -39,7 +63,7 @@ export function Sidebar({ setMessages }: SidebarProps) {
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <div className="h-6 w-6 rounded-full bg-blue-500 text-white grid text-xs place-content-center">
-               {userName.split(" ")[0].charAt(0)}{userName.split(" ")[1].charAt(0)}   
+                {userName.split(" ")[0].charAt(0)}{userName.split(" ")[1].charAt(0)}
               </div>
               <div>
                 <p>{userName}</p>

@@ -1,17 +1,18 @@
+import { IChat } from "@/lib/types";
 import mongoose from "mongoose";
 
 const MessageSchema = new mongoose.Schema(
     {
+        id: { type: String },
         role: {
             type: String,
-            enum: ["user", "assistant"],
+            enum: ["system", "user", "assistant"],
             required: true,
         },
         parts: [
             {
                 type: {
                     type: String,
-                    enum: ["text", "image"],
                     required: true,
                 },
                 text: { type: String },
@@ -25,11 +26,10 @@ const MessageSchema = new mongoose.Schema(
 const ChatSchema = new mongoose.Schema(
     {
         userId: { type: String, required: true },
-        chatId: { type: String, required: true, unique: true },
+        id: { type: String, required: true, unique: true },
         messages: [MessageSchema],
     },
     { timestamps: true }
 );
 
-export const Chat =
-    mongoose.models.Chat || mongoose.model("Chat", ChatSchema);
+export const Chat = (mongoose.models.Chat || mongoose.model<IChat>('Chat', ChatSchema));

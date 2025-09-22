@@ -1,6 +1,6 @@
-import { convertToModelMessages, streamText, UIMessage } from "ai";
+import { convertToModelMessages, streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
-import { loadChatMessages, saveChat } from "@/utils/chat-store";
+import { saveChat } from "@/utils/chat-store";
 
 // Documentation link 
 // https://ai-sdk.dev/docs/ai-sdk-ui/chatbot

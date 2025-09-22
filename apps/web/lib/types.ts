@@ -2,7 +2,7 @@ import { ChatStatus, UIMessage } from "ai";
 import {Document} from 'mongoose';
 
 export type ChatInputProps = {
-  onSend: (msg: any) => void;
+  onSend: (text: string) => void;
   status: ChatStatus;
 }
 

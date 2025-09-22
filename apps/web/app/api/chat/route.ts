@@ -1,3 +1,5 @@
+export const runtime = "edge";
+
 import { convertToModelMessages, streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { saveChat } from "@/utils/chat-store";
